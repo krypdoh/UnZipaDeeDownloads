@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UnZipaDeeDownloads</title>
+  <style>
+    @font-face {
+      font-family: "LuckiestGuy";
+      src: url("LuckiestGuy-Regular.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:    #F5A623;
+      --gold-dk: #C47D0A;
+      --dark:    #1A1A2E;
+      --darker:  #12121F;
+      --card:    #22223A;
+      --text:    #F0EAD6;
+      --muted:   #9090B0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--darker);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    h1, h2, h3, .logo-text {
+      font-family: "LuckiestGuy", sans-serif;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── NAV ─────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 2.5rem;
+      background: rgba(18, 18, 31, 0.88);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(245, 166, 35, 0.15);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+    }
+
+    .nav-brand img { width: 32px; height: 32px; }
+
+    .nav-brand span {
+      font-family: "LuckiestGuy", sans-serif;
+      font-size: 1.1rem;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav ul a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    nav ul a:hover { color: var(--gold); }
+
+    /* ── HERO ────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 7rem 1.5rem 4rem;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245,166,35,0.12) 0%, transparent 70%),
+        var(--darker);
+    }
+
+    .hero-icon {
+      width: 140px;
+      height: 140px;
+      margin-bottom: 1.5rem;
+      filter: drop-shadow(0 8px 32px rgba(245,166,35,0.45));
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-12px); }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      color: var(--gold);
+      text-shadow: 0 4px 24px rgba(245,166,35,0.35);
+      line-height: 1.05;
+      margin-bottom: 1rem;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      color: var(--muted);
+      max-width: 560px;
+      margin-bottom: 2.5rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      border-radius: 6px;
+      font-family: "LuckiestGuy", sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+    }
+
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(245,166,35,0.3); }
+
+    .btn-primary {
+      background: var(--gold);
+      color: var(--darker);
+    }
+
+    .btn-outline {
+      border: 2px solid var(--gold);
+      color: var(--gold);
+      background: transparent;
+    }
+
+    .hero-badges {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 2.5rem;
+    }
+
+    .badge {
+      background: rgba(245,166,35,0.1);
+      border: 1px solid rgba(245,166,35,0.25);
+      color: var(--gold);
+      border-radius: 99px;
+      padding: 0.3rem 0.85rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── SECTION WRAPPER ─────────────────────────────── */
+    section {
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 5rem 1.5rem;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+
+    section h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .section-intro {
+      color: var(--muted);
+      max-width: 560px;
+      margin-bottom: 3rem;
+    }
+
+    /* ── FEATURES ────────────────────────────────────── */
+    #features { background: var(--dark); }
+    #features > section { max-width: 1050px; margin: 0 auto; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: var(--card);
+      border: 1px solid rgba(245,166,35,0.12);
+      border-radius: 12px;
+      padding: 1.75rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(245,166,35,0.45);
+      transform: translateY(-3px);
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.05rem;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* ── HOW IT WORKS ────────────────────────────────── */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      counter-reset: steps;
+    }
+
+    .step {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      counter-increment: steps;
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: var(--darker);
+      font-family: "LuckiestGuy", sans-serif;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-body h3 {
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .step-body p {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* ── FORMATS ─────────────────────────────────────── */
+    #formats { background: var(--dark); }
+
+    .formats-list {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .format-pill {
+      background: var(--card);
+      border: 1px solid rgba(245,166,35,0.25);
+      color: var(--gold);
+      border-radius: 8px;
+      padding: 0.6rem 1.4rem;
+      font-family: "LuckiestGuy", sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── INSTALL ─────────────────────────────────────── */
+    .code-block {
+      background: #0D0D1A;
+      border: 1px solid rgba(245,166,35,0.2);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+      overflow-x: auto;
+    }
+
+    .code-block pre {
+      font-family: "Cascadia Code", "Consolas", monospace;
+      font-size: 0.9rem;
+      color: #C8E6C9;
+      white-space: pre;
+    }
+
+    .code-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    /* ── TRAY MENU PREVIEW ───────────────────────────── */
+    .tray-preview {
+      display: inline-flex;
+      flex-direction: column;
+      background: #2A2A3A;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      min-width: 220px;
+    }
+
+    .tray-item {
+      padding: 0.55rem 1.2rem;
+      font-size: 0.9rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .tray-item:last-child { border-bottom: none; }
+    .tray-item.active { color: var(--gold); }
+    .tray-sep { height: 1px; background: rgba(255,255,255,0.1); }
+
+    .tray-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4rem;
+      flex-wrap: wrap;
+    }
+
+    .tray-desc {
+      max-width: 340px;
+    }
+
+    .tray-desc ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      margin-top: 1.25rem;
+    }
+
+    .tray-desc li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .tray-desc li span.dot {
+      color: var(--gold);
+      font-size: 1.1rem;
+      line-height: 1.4;
+    }
+
+    /* ── FOOTER ──────────────────────────────────────── */
+    footer {
+      border-top: 1px solid rgba(245,166,35,0.1);
+      text-align: center;
+      padding: 2rem 1.5rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    footer strong { color: var(--gold); font-family: "LuckiestGuy", sans-serif; letter-spacing: 0.05em; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#">
+    <img src="icon.png" alt="UnZipaDeeDownloads icon" />
+    <span>UnZipaDeeDownloads</span>
+  </a>
+  <ul>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#install">Install</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <img class="hero-icon" src="icon.png" alt="UnZipaDeeDownloads" />
+  <h1>UnZipaDee<br>Downloads</h1>
+  <p class="hero-sub">
+    Drop an archive in your Downloads folder and it's already extracted —
+    automatically, silently, instantly.
+  </p>
+  <div class="btn-group">
+    <a class="btn btn-primary" href="#install">Get Started</a>
+    <a class="btn btn-outline" href="#how-it-works">See How It Works</a>
+  </div>
+  <div class="hero-badges">
+    <span class="badge">Windows</span>
+    <span class="badge">System Tray App</span>
+    <span class="badge">Python 3.10+</span>
+    <span class="badge">MIT License</span>
+    <span class="badge">Free &amp; Open Source</span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div id="features">
+  <section>
+    <p class="section-label">Why you'll love it</p>
+    <h2>Set it and forget it</h2>
+    <p class="section-intro">
+      Runs quietly in your system tray. No UI to babysit — just automatic extraction every time an archive lands.
+    </p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Instant Extraction</h3>
+        <p>Archives are detected the moment they finish downloading and extracted right away — no clicks required.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📁</div>
+        <h3>Clean Output Folders</h3>
+        <p>Every archive gets its own tidy <em>Extracted&nbsp;&lt;name&gt;</em> folder, keeping Downloads organized.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">👁️</div>
+        <h3>Watch Any Folder</h3>
+        <p>Start with Downloads, then add as many folders as you like directly from the tray menu.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔀</div>
+        <h3>Move-Aware</h3>
+        <p>Detects archives moved <em>into</em> a watched folder from outside. Skips internal rearrangements.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔇</div>
+        <h3>Zero Noise</h3>
+        <p>No window, no popups. Toggle auto-extraction on or off any time from the tray icon.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔓</div>
+        <h3>Open Source</h3>
+        <p>MIT licensed. Inspect, fork, or modify freely. One Python file, no surprises.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <p class="section-label">Under the hood</p>
+  <h2>How It Works</h2>
+  <p class="section-intro">Three steps from download to done.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Watch</h3>
+        <p>On launch, <strong>watchdog</strong> hooks into the Windows file-system notification API and monitors every watched folder for new file events — no polling, no CPU spin.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Detect</h3>
+        <p>When a file with a supported archive extension appears (created <em>or</em> moved in from outside), a brief settle delay ensures the file is fully written before extraction begins.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>Extract</h3>
+        <p><strong>patool</strong> delegates to the best available backend (7-Zip, unrar, etc.) and unpacks the archive into a new <em>Extracted &lt;name&gt;</em> subfolder inside Downloads.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMATS -->
+<div id="formats">
+  <section>
+    <p class="section-label">Supported formats</p>
+    <h2>All the Archives</h2>
+    <p class="section-intro">
+      Handled by patool — install 7-Zip and/or unrar to unlock every format.
+    </p>
+    <div class="formats-list">
+      <span class="format-pill">.zip</span>
+      <span class="format-pill">.7z</span>
+      <span class="format-pill">.rar</span>
+      <span class="format-pill">.tar</span>
+      <span class="format-pill">.gzip</span>
+    </div>
+  </section>
+</div>
+
+<!-- TRAY MENU -->
+<section>
+  <p class="section-label">System Tray</p>
+  <h2>Always at Hand</h2>
+  <p class="section-intro">Everything you need, one right-click away.</p>
+  <div class="tray-wrap">
+    <div class="tray-preview">
+      <div class="tray-item active">✓ Enabled</div>
+      <div class="tray-sep"></div>
+      <div class="tray-item">Open Downloads</div>
+      <div class="tray-item">Add Folder...</div>
+      <div class="tray-item">Remove Folder...</div>
+      <div class="tray-sep"></div>
+      <div class="tray-item">Exit</div>
+    </div>
+    <div class="tray-desc">
+      <ul>
+        <li><span class="dot">●</span> Toggle auto-extraction on or off without restarting</li>
+        <li><span class="dot">●</span> Open your Downloads folder in Explorer instantly</li>
+        <li><span class="dot">●</span> Add any extra folder to watch with a folder-picker dialog</li>
+        <li><span class="dot">●</span> Remove a watched folder when you no longer need it</li>
+        <li><span class="dot">●</span> Exit cleanly — stops the watcher and removes the tray icon</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- INSTALL -->
+<div id="install" style="background: var(--dark);">
+  <section>
+    <p class="section-label">Get started</p>
+    <h2>Install in 60 Seconds</h2>
+    <p class="section-intro">Requires Python 3.10+ and a few packages.</p>
+
+    <p class="code-label">1 — Install dependencies</p>
+    <div class="code-block">
+      <pre>pip install watchdog pystray pillow patool</pre>
+    </div>
+
+    <p class="code-label">2 — Run the app</p>
+    <div class="code-block">
+      <pre>python unzipadeedownloads.py</pre>
+    </div>
+
+    <p class="code-label">3 — Or build a standalone exe</p>
+    <div class="code-block">
+      <pre>pip install pyinstaller
+pyinstaller --onefile --noconsole --add-data "icon.png;." --icon="icon.png" unzipadeedownloads.py</pre>
+    </div>
+
+    <p style="font-size:0.85rem; color: var(--muted); margin-top:1rem;">
+      For <strong>.rar</strong> and <strong>.7z</strong> support, install
+      <a href="https://www.7-zip.org/" style="color:var(--gold);">7-Zip</a> and ensure
+      <code style="color:var(--text);">7z.exe</code> is on your <code style="color:var(--text);">PATH</code>.
+    </p>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>UnZipaDeeDownloads</strong> &nbsp;·&nbsp; MIT License &nbsp;·&nbsp; Windows &nbsp;·&nbsp; Python 3.10+
+</footer>
+
+</body>
+</html>
