@@ -17,12 +17,21 @@ ARCHIVE_EXTENSIONS = {".tar", ".7z", ".zip", ".gzip", ".rar"}
 class ExtractHandler(FileSystemEventHandler):
     def __init__(self):
         self.enabled = True
+        self.watched_paths = {}
     
     def on_created(self, event):
         if self.enabled and not event.is_directory and any(event.src_path.endswith(ext) for ext in ARCHIVE_EXTENSIONS):
             # Small delay to ensure file is fully written
             time.sleep(0.5)
             self.extract_archive(event.src_path)
+
+    def on_moved(self, event):
+        if self.enabled and not event.is_directory and any(event.dest_path.endswith(ext) for ext in ARCHIVE_EXTENSIONS):
+            # Skip if the file was already inside a watched folder (internal reorganization)
+            if any(event.src_path.startswith(folder) for folder in self.watched_paths):
+                return
+            time.sleep(0.5)
+            self.extract_archive(event.dest_path)
 
     def extract_archive(self, archive_path):
         # Check if file still exists (browser may have moved it)
@@ -46,11 +55,12 @@ def main():
     observer = Observer()
     event_handler = ExtractHandler()
     watched_paths = {}  # Track scheduled paths
+    event_handler.watched_paths = watched_paths  # share reference so handler stays in sync
     stop_event = threading.Event()
     tray_icon = None
 
     # Load icon image
-    icon_path = "C:\\Users\\pchar\\Dropbox\\github\\UnZipaDeeDownloads\\icon.png"
+    icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "icon.png")
     try:
         image = Image.open(icon_path)
         print(f"Icon loaded successfully from {icon_path}")
