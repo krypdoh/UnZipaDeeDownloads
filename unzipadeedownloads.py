@@ -1,3 +1,26 @@
+# =============================================================================
+# UnZipaDeeDownloads
+# =============================================================================
+# Description : Watches ~/Downloads (and optional extra folders) for new
+#               archive files and automatically extracts each one into its
+#               own named subfolder ("Extracted <name>").  Runs as a Windows
+#               system-tray application with controls to enable/disable
+#               auto-extraction, open Downloads, add/remove watched folders,
+#               and exit cleanly.
+#
+# Author      : Paul R. Charovkine - 2026 
+#
+# Supported formats : .zip  .7z  .rar  .tar  .gzip
+#
+# Dependencies: watchdog, pystray, Pillow, patool
+#               External tools on PATH for some formats (e.g. 7z, unrar)
+#
+# Platform    : Windows
+# Requires    : Python 3.10+
+#
+# License     : MIT
+# =============================================================================
+
 import os
 import time
 import subprocess
@@ -59,8 +82,9 @@ def main():
     stop_event = threading.Event()
     tray_icon = None
 
-    # Load icon image
-    icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "icon.png")
+    # Load icon image — works both as a script and as a PyInstaller onefile exe
+    base_dir = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    icon_path = os.path.join(base_dir, "icon.png")
     try:
         image = Image.open(icon_path)
         print(f"Icon loaded successfully from {icon_path}")
